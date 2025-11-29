@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import './App.css'
 
 const CRAYONS = [
@@ -24,8 +24,26 @@ function App() {
   const [selectedItem, setSelectedItem] = useState('cake')
   const [selectedColor, setSelectedColor] = useState(CRAYONS[0].color)
   const [fills, setFills] = useState({})
+  const [isPainting, setIsPainting] = useState(false)
 
-  const handleSectionFill = (sectionId) => {
+  useEffect(() => {
+    const stopPainting = () => setIsPainting(false)
+    window.addEventListener('pointerup', stopPainting)
+    window.addEventListener('pointercancel', stopPainting)
+    return () => {
+      window.removeEventListener('pointerup', stopPainting)
+      window.removeEventListener('pointercancel', stopPainting)
+    }
+  }, [])
+
+  const handleSectionFill = (sectionId, options = {}) => {
+    if (options.start) {
+      setIsPainting(true)
+    }
+    if (options.hover && !isPainting) {
+      return
+    }
+
     setFills((prev) => ({
       ...prev,
       [selectedItem]: {
@@ -38,7 +56,10 @@ function App() {
   const currentFills = fills[selectedItem] || {}
 
   return (
-    <div className="game-root">
+    <div
+      className="game-root"
+      onPointerLeave={() => setIsPainting(false)}
+    >
       <div className="game-content">
         <header className="game-header">
           <h1 className="game-title">Magic Coloring Studio</h1>
@@ -142,7 +163,8 @@ function CakeScene({ fills, onFill }) {
         stroke="#d58bb5"
         strokeWidth="3"
         className="scene-section"
-        onPointerDown={() => onFill('plate')}
+        onPointerDown={() => onFill('plate', { start: true })}
+        onPointerEnter={() => onFill('plate', { hover: true })}
       />
 
       {/* Cake base */}
@@ -152,7 +174,8 @@ function CakeScene({ fills, onFill }) {
         stroke="#4b2b5f"
         strokeWidth="3"
         className="scene-section"
-        onPointerDown={() => onFill('base')}
+        onPointerDown={() => onFill('base', { start: true })}
+        onPointerEnter={() => onFill('base', { hover: true })}
       />
 
       {/* Middle cream layer */}
@@ -162,7 +185,8 @@ function CakeScene({ fills, onFill }) {
         stroke="#4b2b5f"
         strokeWidth="3"
         className="scene-section"
-        onPointerDown={() => onFill('cream')}
+        onPointerDown={() => onFill('cream', { start: true })}
+        onPointerEnter={() => onFill('cream', { hover: true })}
       />
 
       {/* Top cake */}
@@ -172,7 +196,8 @@ function CakeScene({ fills, onFill }) {
         stroke="#4b2b5f"
         strokeWidth="3"
         className="scene-section"
-        onPointerDown={() => onFill('top')}
+        onPointerDown={() => onFill('top', { start: true })}
+        onPointerEnter={() => onFill('top', { hover: true })}
       />
 
       {/* Candle */}
@@ -186,7 +211,8 @@ function CakeScene({ fills, onFill }) {
         stroke="#4b2b5f"
         strokeWidth="3"
         className="scene-section"
-        onPointerDown={() => onFill('candle')}
+        onPointerDown={() => onFill('candle', { start: true })}
+        onPointerEnter={() => onFill('candle', { hover: true })}
       />
       <path
         d="M150 80 Q160 70 150 60 Q140 70 150 80 Z"
@@ -194,7 +220,8 @@ function CakeScene({ fills, onFill }) {
         stroke="#e28c4a"
         strokeWidth="2.5"
         className="scene-section"
-        onPointerDown={() => onFill('flame')}
+        onPointerDown={() => onFill('flame', { start: true })}
+        onPointerEnter={() => onFill('flame', { hover: true })}
       />
 
       {/* Sprinkles */}
@@ -234,7 +261,8 @@ function AppleScene({ fills, onFill }) {
         stroke="#3e5d2b"
         strokeWidth="3"
         className="scene-section"
-        onPointerDown={() => onFill('left')}
+        onPointerDown={() => onFill('left', { start: true })}
+        onPointerEnter={() => onFill('left', { hover: true })}
       />
 
       {/* Apple right side */}
@@ -244,7 +272,8 @@ function AppleScene({ fills, onFill }) {
         stroke="#3e5d2b"
         strokeWidth="3"
         className="scene-section"
-        onPointerDown={() => onFill('right')}
+        onPointerDown={() => onFill('right', { start: true })}
+        onPointerEnter={() => onFill('right', { hover: true })}
       />
 
       {/* Apple inner highlight */}
@@ -254,7 +283,8 @@ function AppleScene({ fills, onFill }) {
         stroke="#c0d6b0"
         strokeWidth="2"
         className="scene-section"
-        onPointerDown={() => onFill('highlight')}
+        onPointerDown={() => onFill('highlight', { start: true })}
+        onPointerEnter={() => onFill('highlight', { hover: true })}
       />
 
       {/* Stem */}
@@ -264,7 +294,8 @@ function AppleScene({ fills, onFill }) {
         stroke={fills.stem || '#4a3523'}
         strokeWidth="4"
         className="scene-section"
-        onPointerDown={() => onFill('stem')}
+        onPointerDown={() => onFill('stem', { start: true })}
+        onPointerEnter={() => onFill('stem', { hover: true })}
       />
 
       {/* Leaf */}
@@ -274,7 +305,8 @@ function AppleScene({ fills, onFill }) {
         stroke="#3e5d2b"
         strokeWidth="3"
         className="scene-section"
-        onPointerDown={() => onFill('leaf')}
+        onPointerDown={() => onFill('leaf', { start: true })}
+        onPointerEnter={() => onFill('leaf', { hover: true })}
       />
 
       {/* Seeds */}
@@ -287,7 +319,8 @@ function AppleScene({ fills, onFill }) {
         stroke="#b58c6a"
         strokeWidth="2"
         className="scene-section"
-        onPointerDown={() => onFill('seeds')}
+        onPointerDown={() => onFill('seeds', { start: true })}
+        onPointerEnter={() => onFill('seeds', { hover: true })}
       />
       <ellipse
         cx="190"
@@ -298,7 +331,8 @@ function AppleScene({ fills, onFill }) {
         stroke="#b58c6a"
         strokeWidth="2"
         className="scene-section"
-        onPointerDown={() => onFill('seeds')}
+        onPointerDown={() => onFill('seeds', { start: true })}
+        onPointerEnter={() => onFill('seeds', { hover: true })}
       />
     </svg>
   )
@@ -331,7 +365,8 @@ function NoodlesScene({ fills, onFill }) {
         stroke="#9b6b3c"
         strokeWidth="3"
         className="scene-section"
-        onPointerDown={() => onFill('bowl')}
+        onPointerDown={() => onFill('bowl', { start: true })}
+        onPointerEnter={() => onFill('bowl', { hover: true })}
       />
 
       {/* Noodles */}
@@ -342,7 +377,8 @@ function NoodlesScene({ fills, onFill }) {
         strokeWidth="6"
         strokeLinecap="round"
         className="scene-section"
-        onPointerDown={() => onFill('noodles')}
+        onPointerDown={() => onFill('noodles', { start: true })}
+        onPointerEnter={() => onFill('noodles', { hover: true })}
       />
       <path
         d="M80 170 Q120 150 155 160 Q190 170 225 155"
@@ -351,7 +387,8 @@ function NoodlesScene({ fills, onFill }) {
         strokeWidth="5"
         strokeLinecap="round"
         className="scene-section"
-        onPointerDown={() => onFill('noodles')}
+        onPointerDown={() => onFill('noodles', { start: true })}
+        onPointerEnter={() => onFill('noodles', { hover: true })}
       />
 
       {/* Broth */}
@@ -364,7 +401,8 @@ function NoodlesScene({ fills, onFill }) {
         stroke="#d8b07e"
         strokeWidth="3"
         className="scene-section"
-        onPointerDown={() => onFill('broth')}
+        onPointerDown={() => onFill('broth', { start: true })}
+        onPointerEnter={() => onFill('broth', { hover: true })}
       />
 
       {/* Toppings */}
@@ -376,7 +414,8 @@ function NoodlesScene({ fills, onFill }) {
         stroke="#e08c6a"
         strokeWidth="3"
         className="scene-section"
-        onPointerDown={() => onFill('egg')}
+        onPointerDown={() => onFill('egg', { start: true })}
+        onPointerEnter={() => onFill('egg', { hover: true })}
       />
       <rect
         x="175"
@@ -388,7 +427,8 @@ function NoodlesScene({ fills, onFill }) {
         stroke="#c9655a"
         strokeWidth="3"
         className="scene-section"
-        onPointerDown={() => onFill('meat')}
+        onPointerDown={() => onFill('meat', { start: true })}
+        onPointerEnter={() => onFill('meat', { hover: true })}
       />
     </svg>
   )
@@ -423,7 +463,8 @@ function CatScene({ fills, onFill }) {
         stroke="#82524c"
         strokeWidth="3"
         className="scene-section"
-        onPointerDown={() => onFill('head')}
+        onPointerDown={() => onFill('head', { start: true })}
+        onPointerEnter={() => onFill('head', { hover: true })}
       />
 
       {/* Ears (symmetric) */}
@@ -433,7 +474,8 @@ function CatScene({ fills, onFill }) {
         stroke="#82524c"
         strokeWidth="3"
         className="scene-section"
-        onPointerDown={() => onFill('ears')}
+        onPointerDown={() => onFill('ears', { start: true })}
+        onPointerEnter={() => onFill('ears', { hover: true })}
       />
       <path
         d="M175 95 L190 75 L165 85 Z"
@@ -441,7 +483,8 @@ function CatScene({ fills, onFill }) {
         stroke="#82524c"
         strokeWidth="3"
         className="scene-section"
-        onPointerDown={() => onFill('ears')}
+        onPointerDown={() => onFill('ears', { start: true })}
+        onPointerEnter={() => onFill('ears', { hover: true })}
       />
 
       {/* Body (front oval) */}
@@ -454,7 +497,8 @@ function CatScene({ fills, onFill }) {
         stroke="#82524c"
         strokeWidth="3"
         className="scene-section"
-        onPointerDown={() => onFill('body')}
+        onPointerDown={() => onFill('body', { start: true })}
+        onPointerEnter={() => onFill('body', { hover: true })}
       />
 
       {/* Front paws */}
@@ -468,7 +512,8 @@ function CatScene({ fills, onFill }) {
         stroke="#82524c"
         strokeWidth="3"
         className="scene-section"
-        onPointerDown={() => onFill('paws')}
+        onPointerDown={() => onFill('paws', { start: true })}
+        onPointerEnter={() => onFill('paws', { hover: true })}
       />
       <rect
         x="157"
@@ -480,7 +525,8 @@ function CatScene({ fills, onFill }) {
         stroke="#82524c"
         strokeWidth="3"
         className="scene-section"
-        onPointerDown={() => onFill('paws')}
+        onPointerDown={() => onFill('paws', { start: true })}
+        onPointerEnter={() => onFill('paws', { hover: true })}
       />
 
       {/* Tail (to the side) */}
@@ -490,7 +536,8 @@ function CatScene({ fills, onFill }) {
         stroke="#82524c"
         strokeWidth="4"
         className="scene-section"
-        onPointerDown={() => onFill('tail')}
+        onPointerDown={() => onFill('tail', { start: true })}
+        onPointerEnter={() => onFill('tail', { hover: true })}
       />
 
       {/* Face details */}
@@ -498,6 +545,11 @@ function CatScene({ fills, onFill }) {
       <circle cx="162" cy="125" r="3" fill="#333" />
       <path d="M150 130 Q148 134 150 136 Q152 134 150 130" stroke="#333" strokeWidth="2" />
       <path d="M140 138 Q145 140 150 139 Q155 140 160 138" stroke="#333" strokeWidth="1.5" />
+      {/* Whiskers */}
+      <path d="M140 132 L122 128" stroke="#82524c" strokeWidth="2" className="scene-decor" />
+      <path d="M140 136 L122 136" stroke="#82524c" strokeWidth="2" className="scene-decor" />
+      <path d="M160 132 L178 128" stroke="#82524c" strokeWidth="2" className="scene-decor" />
+      <path d="M160 136 L178 136" stroke="#82524c" strokeWidth="2" className="scene-decor" />
     </svg>
   )
 }
@@ -532,7 +584,8 @@ function FishScene({ fills, onFill }) {
         stroke="#326c88"
         strokeWidth="3"
         className="scene-section"
-        onPointerDown={() => onFill('body')}
+        onPointerDown={() => onFill('body', { start: true })}
+        onPointerEnter={() => onFill('body', { hover: true })}
       />
 
       {/* Tail */}
@@ -542,7 +595,8 @@ function FishScene({ fills, onFill }) {
         stroke="#326c88"
         strokeWidth="3"
         className="scene-section"
-        onPointerDown={() => onFill('tail')}
+        onPointerDown={() => onFill('tail', { start: true })}
+        onPointerEnter={() => onFill('tail', { hover: true })}
       />
 
       {/* Top fin */}
@@ -552,7 +606,8 @@ function FishScene({ fills, onFill }) {
         stroke="#326c88"
         strokeWidth="3"
         className="scene-section"
-        onPointerDown={() => onFill('fin')}
+        onPointerDown={() => onFill('fin', { start: true })}
+        onPointerEnter={() => onFill('fin', { hover: true })}
       />
 
       {/* Eye */}
@@ -564,21 +619,24 @@ function FishScene({ fills, onFill }) {
         stroke={fills.stripes || '#ffffff'}
         strokeWidth="6"
         className="scene-section"
-        onPointerDown={() => onFill('stripes')}
+        onPointerDown={() => onFill('stripes', { start: true })}
+        onPointerEnter={() => onFill('stripes', { hover: true })}
       />
       <path
         d="M155 135 Q150 160 155 185"
         stroke={fills.stripes || '#ffffff'}
         strokeWidth="6"
         className="scene-section"
-        onPointerDown={() => onFill('stripes')}
+        onPointerDown={() => onFill('stripes', { start: true })}
+        onPointerEnter={() => onFill('stripes', { hover: true })}
       />
       <path
         d="M175 135 Q170 160 175 185"
         stroke={fills.stripes || '#ffffff'}
         strokeWidth="6"
         className="scene-section"
-        onPointerDown={() => onFill('stripes')}
+        onPointerDown={() => onFill('stripes', { start: true })}
+        onPointerEnter={() => onFill('stripes', { hover: true })}
       />
     </svg>
   )
@@ -612,7 +670,8 @@ function UmbrellaScene({ fills, onFill }) {
         strokeWidth="5"
         strokeLinecap="round"
         className="scene-section"
-        onPointerDown={() => onFill('handle')}
+        onPointerDown={() => onFill('handle', { start: true })}
+        onPointerEnter={() => onFill('handle', { hover: true })}
       />
 
       {/* Canopy main */}
@@ -622,7 +681,8 @@ function UmbrellaScene({ fills, onFill }) {
         stroke="#5a6a8a"
         strokeWidth="3"
         className="scene-section"
-        onPointerDown={() => onFill('canopyMain')}
+        onPointerDown={() => onFill('canopyMain', { start: true })}
+        onPointerEnter={() => onFill('canopyMain', { hover: true })}
       />
 
       {/* Canopy left */}
@@ -632,7 +692,8 @@ function UmbrellaScene({ fills, onFill }) {
         stroke="#5a6a8a"
         strokeWidth="2"
         className="scene-section"
-        onPointerDown={() => onFill('canopyLeft')}
+        onPointerDown={() => onFill('canopyLeft', { start: true })}
+        onPointerEnter={() => onFill('canopyLeft', { hover: true })}
       />
 
       {/* Canopy middle */}
@@ -642,7 +703,8 @@ function UmbrellaScene({ fills, onFill }) {
         stroke="#5a6a8a"
         strokeWidth="2"
         className="scene-section"
-        onPointerDown={() => onFill('canopyMiddle')}
+        onPointerDown={() => onFill('canopyMiddle', { start: true })}
+        onPointerEnter={() => onFill('canopyMiddle', { hover: true })}
       />
 
       {/* Canopy right */}
@@ -652,7 +714,8 @@ function UmbrellaScene({ fills, onFill }) {
         stroke="#5a6a8a"
         strokeWidth="2"
         className="scene-section"
-        onPointerDown={() => onFill('canopyRight')}
+        onPointerDown={() => onFill('canopyRight', { start: true })}
+        onPointerEnter={() => onFill('canopyRight', { hover: true })}
       />
 
       {/* Tip */}
@@ -664,7 +727,8 @@ function UmbrellaScene({ fills, onFill }) {
         stroke="#5a6a8a"
         strokeWidth="2"
         className="scene-section"
-        onPointerDown={() => onFill('tip')}
+        onPointerDown={() => onFill('tip', { start: true })}
+        onPointerEnter={() => onFill('tip', { hover: true })}
       />
     </svg>
   )
