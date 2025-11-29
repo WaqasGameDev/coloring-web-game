@@ -4,6 +4,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  min-height: 100vh;
   background: radial-gradient(circle at top, #ffeaf6 0, #f7f3ff 45%, #e7f6ff 100%);
   color: #3b2353;
 }
@@ -11,7 +12,6 @@
 .game-content {
   width: 100%;
   max-width: 1120px;
-  max-height: 760px;
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
@@ -39,6 +39,58 @@
   overflow-x: auto;
   padding: 0.5rem 0.25rem;
   -webkit-overflow-scrolling: touch;
+}
+
+.game-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: -0.25rem;
+}
+
+.clear-button {
+  width: 2.2rem;
+  height: 2.2rem;
+  border-radius: 999px;
+  border: none;
+  padding: 0;
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 2px 0 rgba(173, 120, 187, 0.4);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    transform 140ms ease,
+    box-shadow 140ms ease,
+    background 140ms ease,
+    color 140ms ease;
+}
+
+.clear-button:hover {
+  background: linear-gradient(135deg, #ffe6f4, #fff4fb);
+  box-shadow: 0 3px 0 rgba(173, 120, 187, 0.6);
+  transform: translateY(-1px);
+}
+
+.clear-button:active {
+  transform: translateY(1px) scale(0.97);
+  box-shadow: 0 1px 0 rgba(173, 120, 187, 0.3);
+}
+
+.clear-button-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.clear-button-icon svg {
+  width: 1.2rem;
+  height: 1.2rem;
+  fill: #783063;
+}
+
+.clear-button:hover .clear-button-icon svg {
+  fill: #5a204f;
 }
 
 .item-pill {
@@ -90,28 +142,33 @@
   background: radial-gradient(circle at top, #fff7fd 0, #fefeff 55%, #f3f2ff 100%);
   border-radius: 1.1rem;
   padding: 0.75rem;
+  position: relative;
+}
+
+.canvas-stack {
+  position: relative;
+  width: 100%;
+  height: 100%;
 }
 
 .scene-svg {
   width: 100%;
   height: auto;
   display: block;
-  max-height: 60vh;
+  max-height: min(60vh, 460px);
+  touch-action: none;
+}
+
+.paint-layer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
 }
 
 .scene-section {
-  cursor: pointer;
-  transition:
-    transform 120ms ease,
-    filter 150ms ease,
-    stroke-width 120ms ease;
-}
-
-.scene-section:hover,
-.scene-section:active {
-  transform: scale(1.02);
-  filter: drop-shadow(0 0 4px rgba(255, 140, 204, 0.45));
-  stroke-width: 3.5;
+  cursor: default;
 }
 
 .scene-decor {
@@ -176,6 +233,32 @@
   position: relative;
 }
 
+.eraser-icon {
+  width: 1.6rem;
+  height: 3.4rem;
+  border-radius: 0.3rem;
+  background: linear-gradient(135deg, #ffffff, #f5f1ff);
+  box-shadow:
+    0 3px 0 rgba(110, 69, 110, 0.35),
+    0 0 0 1px rgba(255, 255, 255, 0.7);
+  position: relative;
+}
+
+.eraser-icon::before {
+  content: '';
+  position: absolute;
+  inset: 0.3rem 0.28rem 0.45rem;
+  border-radius: 0.22rem;
+  background: repeating-linear-gradient(
+    -45deg,
+    #fce4ec 0,
+    #fce4ec 4px,
+    #f8bbd0 4px,
+    #f8bbd0 8px
+  );
+  opacity: 0.95;
+}
+
 .crayon-color::before {
   content: '';
   position: absolute;
@@ -199,14 +282,16 @@
   opacity: 0.9;
 }
 
-.crayon--active .crayon-color {
+.crayon--active .crayon-color,
+.crayon--active .eraser-icon {
   transform: translateY(-2px);
   box-shadow:
     0 5px 0 rgba(110, 69, 110, 0.48),
     0 0 0 1px rgba(255, 255, 255, 0.9);
 }
 
-.crayon:active .crayon-color {
+.crayon:active .crayon-color,
+.crayon:active .eraser-icon {
   transform: translateY(1px) scale(0.97);
   box-shadow:
     0 2px 0 rgba(110, 69, 110, 0.4),
@@ -215,7 +300,7 @@
 
 @media (max-width: 768px) {
   .game-root {
-    padding: 1rem 0.6rem 1.7rem;
+    padding: 0.8rem 0.6rem 1.2rem;
     align-items: stretch;
     justify-content: flex-start;
   }
@@ -234,6 +319,10 @@
 
   .crayon-grid {
     grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .scene-svg {
+    max-height: 52vh;
   }
 }
 
